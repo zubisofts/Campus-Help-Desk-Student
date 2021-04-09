@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.zubisoft.campushelpdeskstudent.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_all_requests"
+        android:name="com.zubisoft.campushelpdeskstudent.ui.allrequests.AllRequestsFragment"
+        android:label="@string/menu_all_requests"
+        tools:layout="@layout/fragment_all_requests" />
+
+    <fragment
+        android:id="@+id/nav_active_requests"
+        android:name="com.zubisoft.campushelpdeskstudent.ui.activerequests.ActiveRequestsFragment"
+        android:label="@string/menu_active_requests"
+        tools:layout="@layout/fragment_active_requests" />
+</navigation>
