@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SplashActivity">
+
+    <pl.droidsonroids.gif.GifImageView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:src="@drawable/notes"
+        android:id="@+id/gif"
+        android:layout_centerInParent="true"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="My HelpDisk"
+        android:layout_below="@id/gif"
+        android:gravity="center_horizontal"
+        android:textSize="20dp"
+        android:id="@+id/txt_tittle"
+        android:fontFamily="@font/alvaro"
+        android:textColor="@color/black"
+        />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_tittle">
+    <com.wang.avi.AVLoadingIndicatorView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:indicatorName="BallPulseIndicator"
+        android:layout_gravity="center_horizontal"
+        app:indicatorColor="@color/teal_200"
+
+        />
+        </FrameLayout>
+</RelativeLayout>
