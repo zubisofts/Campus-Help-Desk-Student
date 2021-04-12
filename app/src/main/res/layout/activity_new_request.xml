@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.AppCompat.Dark"
             android:gravity="start"
-            app:title="New Note"
+            app:title="New Request"
             app:navigationIcon="@drawable/ic__close"
             android:id="@+id/toolbar"/>
 
