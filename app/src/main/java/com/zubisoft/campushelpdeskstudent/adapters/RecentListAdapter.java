@@ -40,6 +40,7 @@ public class RecentListAdapter extends  RecyclerView.Adapter<RecentListAdapter.R
         if (requests.status.equals("pending")){
             holder.btn_status.setBackgroundColor( R.color.red);
             holder.btn_status.setText(requests.status);
+
         }else {
             holder.btn_status.setText(requests.status);
         }

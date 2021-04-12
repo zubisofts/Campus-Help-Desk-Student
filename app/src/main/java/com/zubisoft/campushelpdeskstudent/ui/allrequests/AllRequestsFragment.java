@@ -11,8 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.zubisoft.campushelpdeskstudent.R;
+import com.zubisoft.campushelpdeskstudent.adapters.AllRequestAdapter;
 
 public class AllRequestsFragment extends Fragment {
 
@@ -23,11 +25,14 @@ public class AllRequestsFragment extends Fragment {
         allRequestsViewModel =
                 new ViewModelProvider(this).get(AllRequestsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_all_requests, container, false);
-        final TextView textView = root.findViewById(R.id.text_gallery);
+//        final TextView textView = root.findViewById(R.id.text_gallery);
+        RecyclerView recyclerView = root.findViewById(R.id.requestsRecycler);
+        AllRequestAdapter adapter = new AllRequestAdapter();
+        recyclerView.setAdapter(adapter);
         allRequestsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
+
             }
         });
         return root;
