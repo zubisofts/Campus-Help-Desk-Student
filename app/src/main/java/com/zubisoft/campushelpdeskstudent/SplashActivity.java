@@ -22,7 +22,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
 
-                startActivity(new Intent(SplashActivity.this,SigninActivity.class));
+                startActivity(new Intent(SplashActivity.this,SignupActivity.class));
                     finish();
 
             }

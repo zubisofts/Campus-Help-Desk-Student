@@ -11,7 +11,7 @@
         android:theme="@style/Theme.CampusHelpDeskStudent">
         <activity android:name=".RequestDetails"></activity>
         <activity android:name=".NewRequestActivity" />
-        <activity android:name=".SigninActivity" />
+        <activity android:name=".SignupActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity" />
         <activity
