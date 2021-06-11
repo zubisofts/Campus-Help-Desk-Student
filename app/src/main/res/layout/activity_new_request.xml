@@ -47,6 +47,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/inputTitle"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
@@ -56,10 +57,12 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:id="@+id/edtTitle"
             android:hint="Tittle"
             android:drawableStart="@drawable/ic_note"
             android:drawablePadding="8dp"
             android:maxLines="1"
+            android:inputType="text"
             android:textSize="20dp"
             android:fontFamily="@font/alvaro"
             android:ellipsize="end"/>
@@ -70,14 +73,14 @@
         android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:id="@+id/input_text"
+        android:id="@+id/inputRequestBody"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:hintEnabled="false">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:id="@+id/edt_text"
+            android:id="@+id/edtRequestBody"
             android:gravity="start"
             android:maxLines="6"
             android:fontFamily="@font/alvaro"
@@ -86,6 +89,7 @@
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/btnSubmitRequest"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="20dp"

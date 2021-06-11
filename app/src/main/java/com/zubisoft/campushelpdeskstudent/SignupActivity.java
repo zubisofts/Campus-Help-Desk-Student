@@ -1,34 +1,28 @@
 package com.zubisoft.campushelpdeskstudent;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.tiper.MaterialSpinner;
-import com.zubisoft.campushelpdeskstudent.models.Student;
+import com.zubisoft.campushelpdeskstudent.models.UserModel;
+import com.zubisoft.campushelpdeskstudent.utils.InputListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -61,21 +55,24 @@ public class SignupActivity extends AppCompatActivity {
         edtEmail=findViewById(R.id.edtEmail);
         edtPassword=findViewById(R.id.edtPassword);
 
-        attatchListenersToEditTexts();
+        attacheListenersToEditTexts();
 
         MaterialButton btn_signUP = findViewById(R.id.btn_sigUp);
 
-        btn_signUP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(isFieldsValidated()){
-                    showDialog();
-                    saveStudentToDatabase();
-                }else{
-                    Toast.makeText(SignupActivity.this, "Make all fields are filled", Toast.LENGTH_SHORT).show();
-                }
+        btn_signUP.setOnClickListener(view -> {
+            if(isFieldsValidated()){
+                showDialog();
+                saveStudentToDatabase();
+            }else{
+                Toast.makeText(SignupActivity.this, "Make all fields are filled", Toast.LENGTH_SHORT).show();
             }
         });
+
+        findViewById(R.id.txtLogin).setOnClickListener(v -> {
+            startActivity(new Intent(SignupActivity.this, LoginActivity.class));
+            finish();
+        });
+
         ArrayList<String> items = new ArrayList<>();
         items.add("NDI");
         items.add("NDII");
@@ -118,49 +115,41 @@ public class SignupActivity extends AppCompatActivity {
 
     private void saveStudentToDatabase() {
 
-        Student student=new Student();
-        student.setFullName(edtName.getText().toString());
-        student.setRegNo(edtRegNo.getText().toString());
-        student.setLevel(spinnerLevel.getSelectedItem().toString());
-        student.setDepartment(spinnerDept.getSelectedItem().toString());
-        student.setEmail(edtEmail.getText().toString());
+        UserModel userModel=new UserModel(
+                edtName.getText().toString(),
+                edtRegNo.getText().toString(),
+                "",
+                spinnerLevel.getSelectedItem().toString(),
+                spinnerDept.getSelectedItem().toString(),
+                "student",
+                edtEmail.getText().toString(),
+                new Date().getTime()
+                );
 
         FirebaseAuth mAuth=FirebaseAuth.getInstance();
         mAuth.createUserWithEmailAndPassword(edtEmail.getText().toString(), edtPassword.getText().toString())
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        String id=authResult.getUser().getUid();
-                        student.setId(id);
-                        saveUser(student);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(SignupActivity.this, "Error:"+e.getMessage(), Toast.LENGTH_SHORT).show();
-                hideDialog();
-            }
-        });
+                .addOnSuccessListener(authResult -> {
+                    String id=authResult.getUser().getUid();
+                    userModel.setId(id);
+                    saveUser(userModel);
+                }).addOnFailureListener(e -> {
+                    Toast.makeText(SignupActivity.this, "Error:"+e.getMessage(), Toast.LENGTH_SHORT).show();
+                    hideDialog();
+                });
 
     }
 
-    private void saveUser(Student student) {
+    private void saveUser(UserModel userModel) {
         FirebaseFirestore.getInstance()
                 .collection("students")
-                .add(student)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(SignupActivity.this, "Student data saved successfully", Toast.LENGTH_SHORT).show();
-                        hideDialog();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(SignupActivity.this, "Error:"+e.getMessage(), Toast.LENGTH_SHORT).show();
-                hideDialog();
-            }
-        });
+                .add(userModel)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(SignupActivity.this, "Student data saved successfully", Toast.LENGTH_SHORT).show();
+                    hideDialog();
+                }).addOnFailureListener(e -> {
+                    Toast.makeText(SignupActivity.this, "Error:"+e.getMessage(), Toast.LENGTH_SHORT).show();
+                    hideDialog();
+                });
     }
 
     private boolean isFieldsValidated() {
@@ -189,7 +178,7 @@ public class SignupActivity extends AppCompatActivity {
 
     }
 
-    private void attatchListenersToEditTexts() {
+    private void attacheListenersToEditTexts() {
 
        edtName.addTextChangedListener(new InputListener(inputName));
        edtEmail.addTextChangedListener(new InputListener(inputEmail));
@@ -203,40 +192,12 @@ public class SignupActivity extends AppCompatActivity {
     private void showDialog(){
         progressDialog.setMessage("Savinf student data...");
         progressDialog.setCancelable(false);
-        progressDialog.show();;
+        progressDialog.show();
     }
 
     private void hideDialog(){
         if(progressDialog.isShowing()) {
             progressDialog.dismiss();
-        }
-    }
-
-    public class InputListener implements TextWatcher{
-
-        private TextInputLayout inputLayout;
-
-        public InputListener(TextInputLayout textInputLayout){
-            this.inputLayout=textInputLayout;
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(TextUtils.isEmpty(s)){
-                inputLayout.setError("This field must not be empty");
-            }else{
-                inputLayout.setError(null);
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
         }
     }
 

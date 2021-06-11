@@ -1,23 +1,27 @@
 package com.zubisoft.campushelpdeskstudent.models;
 
-public class Student {
+public class UserModel {
 
     private String id;
     private String fullName;
     private String regNo;
+    private String staffNo;
     private String level;
     private String department;
+    private String type;
     private String email;
     private long createdAt;
 
-    public Student() {
+    public UserModel() {
     }
 
-    public Student(String fullName, String regNo, String level, String department, String email, long createdAt) {
+    public UserModel(String fullName, String regNo, String staffNo, String level, String department, String type, String email, long createdAt) {
         this.fullName = fullName;
         this.regNo = regNo;
+        this.staffNo = staffNo;
         this.level = level;
         this.department = department;
+        this.type = type;
         this.email = email;
         this.createdAt = createdAt;
     }
@@ -46,6 +50,14 @@ public class Student {
         this.regNo = regNo;
     }
 
+    public String getStaffNo() {
+        return staffNo;
+    }
+
+    public void setStaffNo(String staffNo) {
+        this.staffNo = staffNo;
+    }
+
     public String getLevel() {
         return level;
     }
@@ -60,6 +72,14 @@ public class Student {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getEmail() {

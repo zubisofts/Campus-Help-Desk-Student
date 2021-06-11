@@ -5,6 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -22,8 +26,17 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
 
-                startActivity(new Intent(SplashActivity.this,SignupActivity.class));
-                    finish();
+                FirebaseUser currentUser = FirebaseAuth.getInstance()
+                        .getCurrentUser();
+                if(currentUser==null){
+                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                }else{
+                    Intent intent=new Intent(SplashActivity.this, MainActivity.class);
+                    intent.putExtra("uid", currentUser.getUid());
+                    startActivity(intent);
+                }
+                finish();
+
 
             }
         }.start();
