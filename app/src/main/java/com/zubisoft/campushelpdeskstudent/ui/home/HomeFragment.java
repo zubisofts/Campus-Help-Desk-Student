@@ -59,6 +59,14 @@ public class HomeFragment extends Fragment {
                 }else{
                     adapter.setRequestsArrayList(requests);
                 }
+
+                if(requests.isEmpty()){
+                    binding.emptyLayout.setVisibility(View.VISIBLE);
+                    binding.recentRecycler.setVisibility(View.GONE);
+                }else{
+                    binding.emptyLayout.setVisibility(View.GONE);
+                    binding.recentRecycler.setVisibility(View.VISIBLE);
+                }
             }
         });
 

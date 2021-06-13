@@ -56,8 +56,10 @@ public class AllRequestsFragment extends Fragment implements AllRequestAdapter.R
                     List<Request> requests=response.getData();
                     if (requests.isEmpty()){
                         binding.emptyLayout.setVisibility(View.VISIBLE);
+                        binding.requestsRecycler.setVisibility(View.GONE);
                     }else {
                         binding.emptyLayout.setVisibility(View.GONE);
+                        binding.requestsRecycler.setVisibility(View.VISIBLE);
                         adapter.setRequestList(requests);
                     }
                 }
