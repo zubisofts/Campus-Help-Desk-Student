@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "822681435802",
+    "project_id": "campus-help-desk-student",
+    "storage_bucket": "campus-help-desk-student.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:822681435802:android:ebb896383835f0c4352923",
+        "android_client_info": {
+          "package_name": "com.zubisoft.campushelpdeskstudent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "822681435802-nkgt839fcq25h2c242jqntgmnkieke5j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAquA_CKuMMdKJi3unARuJN4U-KnUjv_J0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "822681435802-nkgt839fcq25h2c242jqntgmnkieke5j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
