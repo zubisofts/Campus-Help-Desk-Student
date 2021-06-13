@@ -1,6 +1,8 @@
 package com.zubisoft.campushelpdeskstudent;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -10,13 +12,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.tiper.MaterialSpinner;
+import com.zubisoft.campushelpdeskstudent.models.ApiResponse;
 import com.zubisoft.campushelpdeskstudent.models.UserModel;
 import com.zubisoft.campushelpdeskstudent.utils.InputListener;
+import com.zubisoft.campushelpdeskstudent.viewmodels.AuthViewModel;
+import com.zubisoft.campushelpdeskstudent.viewmodels.RequestViewModel;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,16 +32,21 @@ import java.util.Date;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private TextInputEditText edtName, edtRegNo, edtEmail, edtPassword;
-    private TextInputLayout inputName, inputRegNo, inputEmail, inputPassword;
+    private TextInputEditText edtName, edtRegNo, edtEmail, edtPhone, edtPassword;
+    private TextInputLayout inputName, inputRegNo, inputEmail, inputPhoneNumber, inputPassword;
     private MaterialSpinner spinnerLevel;
     private MaterialSpinner spinnerDept;
     private ProgressDialog progressDialog;
+
+    private AuthViewModel authViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        authViewModel =
+                new ViewModelProvider(this).get(AuthViewModel.class);
 
         progressDialog=new ProgressDialog(this);
 
@@ -47,12 +58,14 @@ public class SignupActivity extends AppCompatActivity {
         inputName=findViewById(R.id.inputName);
         inputRegNo=findViewById(R.id.inputRegNo);
         inputEmail=findViewById(R.id.inputEmail);
+        inputPhoneNumber=findViewById(R.id.inputPhone);
         inputPassword=findViewById(R.id.inputPassword);
 
 //        TextInputEditexts
         edtName=findViewById(R.id.edtName);
         edtRegNo=findViewById(R.id.edtRegNo);
         edtEmail=findViewById(R.id.edtEmail);
+        edtPhone=findViewById(R.id.edtPhone);
         edtPassword=findViewById(R.id.edtPassword);
 
         attacheListenersToEditTexts();
@@ -111,6 +124,20 @@ public class SignupActivity extends AppCompatActivity {
 
             }
         });
+
+        authViewModel.onAuthResponse().observe(this, authResponse -> {
+            if(authResponse.getError()==null){
+                Toast.makeText(SignupActivity.this, "User account successfully created", Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(SignupActivity.this, MainActivity.class);
+                intent.putExtra("uid", authResponse.getData());
+                startActivity(intent);
+                finish();
+            }else{
+                Snackbar.make(btn_signUP, authResponse.getError(), Snackbar.LENGTH_LONG).show();
+            }
+
+            hideDialog();
+        });
     }
 
     private void saveStudentToDatabase() {
@@ -123,33 +150,10 @@ public class SignupActivity extends AppCompatActivity {
                 spinnerDept.getSelectedItem().toString(),
                 "student",
                 edtEmail.getText().toString(),
+                edtPhone.getText().toString(),
                 new Date().getTime()
                 );
-
-        FirebaseAuth mAuth=FirebaseAuth.getInstance();
-        mAuth.createUserWithEmailAndPassword(edtEmail.getText().toString(), edtPassword.getText().toString())
-                .addOnSuccessListener(authResult -> {
-                    String id=authResult.getUser().getUid();
-                    userModel.setId(id);
-                    saveUser(userModel);
-                }).addOnFailureListener(e -> {
-                    Toast.makeText(SignupActivity.this, "Error:"+e.getMessage(), Toast.LENGTH_SHORT).show();
-                    hideDialog();
-                });
-
-    }
-
-    private void saveUser(UserModel userModel) {
-        FirebaseFirestore.getInstance()
-                .collection("students")
-                .add(userModel)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(SignupActivity.this, "Student data saved successfully", Toast.LENGTH_SHORT).show();
-                    hideDialog();
-                }).addOnFailureListener(e -> {
-                    Toast.makeText(SignupActivity.this, "Error:"+e.getMessage(), Toast.LENGTH_SHORT).show();
-                    hideDialog();
-                });
+        authViewModel.signUpUser(userModel, edtPassword.getText().toString());
     }
 
     private boolean isFieldsValidated() {
@@ -165,6 +169,9 @@ public class SignupActivity extends AppCompatActivity {
             return false;
         }else if(spinnerDept.getSelectedItemId()==MaterialSpinner.INVALID_POSITION){
             spinnerDept.setError("Please select an option");
+            return false;
+        }else if(edtPhone.getText().toString().isEmpty()){
+            inputPhoneNumber.setError("Field must not be empty");
             return false;
         }else if(edtEmail.getText().toString().isEmpty()){
             inputEmail.setError("Field must not be empty");
@@ -182,6 +189,7 @@ public class SignupActivity extends AppCompatActivity {
 
        edtName.addTextChangedListener(new InputListener(inputName));
        edtEmail.addTextChangedListener(new InputListener(inputEmail));
+       edtPhone.addTextChangedListener(new InputListener(inputPhoneNumber));
        edtRegNo.addTextChangedListener(new InputListener(inputRegNo));
        edtPassword.addTextChangedListener(new InputListener(inputPassword));
        spinnerLevel.getEditText().addTextChangedListener(new InputListener(spinnerLevel));
@@ -190,7 +198,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private void showDialog(){
-        progressDialog.setMessage("Savinf student data...");
+        progressDialog.setMessage("Creating your account...");
         progressDialog.setCancelable(false);
         progressDialog.show();
     }

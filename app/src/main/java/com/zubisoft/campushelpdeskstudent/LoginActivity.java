@@ -3,22 +3,19 @@ package com.zubisoft.campushelpdeskstudent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PatternMatcher;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Patterns;
-import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.util.PatternsCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.zubisoft.campushelpdeskstudent.features.admin.AdminMainActivity;
 import com.zubisoft.campushelpdeskstudent.databinding.ActivityLoginBinding;
-import com.zubisoft.campushelpdeskstudent.models.ApiResponse;
+import com.zubisoft.campushelpdeskstudent.models.UserModel;
 import com.zubisoft.campushelpdeskstudent.viewmodels.AuthViewModel;
 
 public class LoginActivity extends AppCompatActivity {
@@ -31,15 +28,15 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding=ActivityLoginBinding.inflate(getLayoutInflater());
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        dialog=new ProgressDialog(this);
+        dialog = new ProgressDialog(this);
 
-        authViewModel= new ViewModelProvider.NewInstanceFactory().create(AuthViewModel.class);
+        authViewModel = new ViewModelProvider.NewInstanceFactory().create(AuthViewModel.class);
         initFields();
         binding.btnLogin.setOnClickListener(v -> {
-            if(validateLogin()){
+            if (validateLogin()) {
                 signInUser();
             }
         });
@@ -49,36 +46,56 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         });
 
-        authViewModel.onAuthResponse().observe(this, response -> {
-            if(response.getError()==null){
-                Intent intent=new Intent(this, MainActivity.class);
-                intent.putExtra("uid", response.getData());
-                startActivity(intent);
-                finish();
-            }else{
+        authViewModel.onAuthLoginResponse().observe(this, response -> {
+            if (response.getError() == null) {
+                UserModel user=response.getData();
+                if(user.getType().equals("student")){
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.putExtra("uid", response.getData().getId());
+                    startActivity(intent);
+                    finish();
+                }else if(user.getType().equals("staff")){
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.putExtra("uid", response.getData().getId());
+//                    startActivity(intent);
+                    Toast.makeText(this, "This is a staff", Toast.LENGTH_SHORT).show();
+                }else{
+                    Intent intent = new Intent(this, AdminMainActivity.class);
+                    intent.putExtra("uid", response.getData().getId());
+                    startActivity(intent);
+                }
+            } else {
                 Snackbar.make(binding.getRoot(), response.getError(), Snackbar.LENGTH_LONG).show();
             }
 
             hideDialog();
         });
 
+//        ArrayList<String> dpt = new ArrayList<>();
+//        dpt.add("Student");
+//        dpt.add("Staff");
+//        dpt.add("Admin");
+//        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, dpt);
+//        binding.spinnerRole.setAdapter(adapter1);
+
     }
 
     private void signInUser() {
-        showLoadingDialog("Signing in...");
-        authViewModel.loginUser(binding.edtEmail.getText().toString(), binding.edtPassword.getText().toString());
+        showLoadingDialog();
+        authViewModel.loginUser(binding.edtEmail.getText().toString(),
+                binding.edtPassword.getText().toString());
 
     }
 
     private boolean validateLogin() {
 
-       if(TextUtils.isEmpty(binding.edtEmail.getText().toString())){
-           return false;
-       }else return binding.edtPassword.getText().toString().length() >= 5;
+        if (TextUtils.isEmpty(binding.edtEmail.getText().toString())) {
+            return false;
+        } else return binding.edtPassword.getText().toString().length() >= 5;
 
     }
 
-    private void initFields(){
+    private void initFields() {
         binding.edtEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -87,9 +104,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(!Patterns.EMAIL_ADDRESS.matcher(s).matches()){
+                if (!Patterns.EMAIL_ADDRESS.matcher(s).matches()) {
                     binding.inputEmail.setError("Please enter a valid email");
-                }else {
+                } else {
                     binding.inputEmail.setError(null);
                 }
             }
@@ -122,14 +139,14 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void showLoadingDialog(String message){
-        dialog.setMessage(message);
+    private void showLoadingDialog() {
+        dialog.setMessage("Signing in...");
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 
-    private void hideDialog(){
-        if(dialog.isShowing()){
+    private void hideDialog() {
+        if (dialog.isShowing()) {
             dialog.hide();
         }
     }

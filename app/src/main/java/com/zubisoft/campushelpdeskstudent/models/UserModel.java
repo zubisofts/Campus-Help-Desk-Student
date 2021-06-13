@@ -10,12 +10,13 @@ public class UserModel {
     private String department;
     private String type;
     private String email;
+    private String phoneNumber;
     private long createdAt;
 
     public UserModel() {
     }
 
-    public UserModel(String fullName, String regNo, String staffNo, String level, String department, String type, String email, long createdAt) {
+    public UserModel(String fullName, String regNo, String staffNo, String level, String department, String type, String email, String phoneNumber, long createdAt) {
         this.fullName = fullName;
         this.regNo = regNo;
         this.staffNo = staffNo;
@@ -23,6 +24,7 @@ public class UserModel {
         this.department = department;
         this.type = type;
         this.email = email;
+        this.phoneNumber=phoneNumber;
         this.createdAt = createdAt;
     }
 
@@ -88,6 +90,14 @@ public class UserModel {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public long getCreatedAt() {

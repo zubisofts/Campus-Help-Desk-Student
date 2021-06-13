@@ -16,6 +16,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.zubisoft.campushelpdeskstudent.models.ApiResponse;
 import com.zubisoft.campushelpdeskstudent.models.Request;
+import com.zubisoft.campushelpdeskstudent.models.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,5 +80,25 @@ public class DataRepository {
             }
         });
 
+    }
+
+    public void fetchUser(String uid, MutableLiveData<ApiResponse<UserModel, String>> userListener) {
+        db.collection("users")
+                .document(uid)
+                .get().addOnSuccessListener(documentSnapshot -> {
+            UserModel user = documentSnapshot.toObject(UserModel.class);
+            userListener.postValue(new ApiResponse<>(user, null));
+        }).addOnFailureListener(e -> {
+            userListener.postValue(new ApiResponse<>(null, e.getMessage()));
+        });
+
+    }
+
+    public void saveUser(UserModel user, MutableLiveData<ApiResponse<String, String>> userAuthListener) {
+        db.collection("users")
+                .document(user.getId())
+                .set(user)
+                .addOnSuccessListener(aVoid -> userAuthListener.postValue(new ApiResponse<>(user.getId(), null)))
+                .addOnFailureListener(e -> userAuthListener.postValue(new ApiResponse<>(null, e.getMessage())));
     }
 }

@@ -70,6 +70,21 @@
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.tiper.MaterialSpinner
+            android:id="@+id/spinnerRole"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
+            android:hint="Select Role"
+            android:visibility="gone"
+            android:textColor="@color/black"
+            app:hintEnabled="true"
+            app:spinnerMode="bottomsheet"
+            app:startIconDrawable="@drawable/ic_user" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
