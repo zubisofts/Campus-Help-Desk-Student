@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,72 +13,81 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.zubisoft.campushelpdeskstudent.R;
-import com.zubisoft.campushelpdeskstudent.RequestDetails;
+import com.zubisoft.campushelpdeskstudent.RequestDetailsActivity;
+import com.zubisoft.campushelpdeskstudent.models.Request;
+import com.zubisoft.campushelpdeskstudent.utils.AppUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class AllRequestAdapter extends RecyclerView.Adapter<AllRequestAdapter.RequestItemHolder> {
 
-        ArrayList<RecentListAdapter.Requests> requestsArrayList = new ArrayList<>();
-    public AllRequestAdapter() {
-        this.requestsArrayList = RecentListAdapter.Requests.getRequests();
-    }
-
+    private List<Request> requestList = new ArrayList<>();
+    private RequestItemListener requestItemListener;
 
     @NonNull
     @Override
     public RequestItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-      View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recent_list_iem,parent,false);
-      return new RequestItemHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.request_list_item, parent, false);
+        return new RequestItemHolder(view);
     }
 
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull RequestItemHolder holder, int position) {
-        RecentListAdapter.Requests requests = requestsArrayList.get(position);
-        holder.txt_tittle.setText(requests.tittle);
-        holder.txt_date.setText(requests.date);
-        if (requests.status.equals("pending")){
-            holder.btn_status.setBackgroundColor( R.color.red);
-            holder.btn_status.setText(requests.status);
+        Request request = requestList.get(position);
+        holder.txtTitle.setText(request.getTitle());
+        holder.txtBody.setText(request.getBody());
+        String time = new SimpleDateFormat("EEE, d MMM yyyy HH:mm a", Locale.getDefault()).format(request.getTimestamp());
+        holder.txtDate.setText(time);
+        holder.btnStatus.setBackgroundColor(AppUtils.getStatusColor(request.getStatus()));
+        holder.btnStatus.setText(request.getStatus());
+        holder.itemView.setOnClickListener(view -> holder.itemView.getContext().startActivity(new Intent(holder.itemView.getContext(), RequestDetailsActivity.class)));
+        holder.menu.setOnClickListener(view -> {
+            requestItemListener.onMenuClicked(request, holder.menu);
+        });
 
-        }else {
-            holder.btn_status.setText(requests.status);
-        }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.itemView.getContext().startActivity(new Intent(holder.itemView.getContext(), RequestDetails.class));
-            }
-        });
-        holder.menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu popupMenu = new PopupMenu(holder.itemView.getContext(),holder.menu);
-                popupMenu.inflate(R.menu.request_menu);
-                popupMenu.show();
-            }
-        });
+        holder.itemView.setOnClickListener(v -> requestItemListener.onRequestItemClicked(request));
     }
 
     @Override
     public int getItemCount() {
-        return requestsArrayList.size();
+        return requestList.size();
     }
 
-    public  class RequestItemHolder extends RecyclerView.ViewHolder{
+    public void setRequestList(List<Request> requestList) {
+        this.requestList = requestList;
+        notifyDataSetChanged();
+    }
 
-        private TextView txt_tittle;
-        private  TextView txt_date;
-        private MaterialButton btn_status;
-        private ImageView menu;
+    public void setRequestItemListener(RequestItemListener requestItemListener) {
+        this.requestItemListener = requestItemListener;
+    }
+
+    public class RequestItemHolder extends RecyclerView.ViewHolder {
+
+        private final TextView txtTitle;
+        private final TextView txtBody;
+        private TextView txtDate;
+        private final MaterialButton btnStatus;
+        private final ImageView menu;
+
         public RequestItemHolder(@NonNull View itemView) {
             super(itemView);
-            txt_tittle = itemView.findViewById(R.id.txtRequestTitle);
-            txt_date = itemView.findViewById(R.id.txtDate);
-            btn_status = itemView.findViewById(R.id.btnStatus);
+            txtTitle = itemView.findViewById(R.id.txtRequestTitle);
+            txtBody = itemView.findViewById(R.id.txtBody);
+            txtDate = itemView.findViewById(R.id.txtDate);
+            btnStatus = itemView.findViewById(R.id.btnStatus);
             menu = itemView.findViewById(R.id.btn_menu);
         }
+    }
+
+    public interface RequestItemListener {
+        void onRequestItemClicked(Request request);
+
+        void onMenuClicked(Request request, View view);
     }
 
 }

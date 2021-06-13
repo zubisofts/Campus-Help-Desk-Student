@@ -1,6 +1,8 @@
 package com.zubisoft.campushelpdeskstudent.models;
 
-public class Request {
+import java.io.Serializable;
+
+public class Request implements Serializable {
 
     private String id;
     private String title;

@@ -1,6 +1,7 @@
 package com.zubisoft.campushelpdeskstudent.adapters;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +12,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.zubisoft.campushelpdeskstudent.R;
+import com.zubisoft.campushelpdeskstudent.RequestDetailsActivity;
+import com.zubisoft.campushelpdeskstudent.models.Request;
+import com.zubisoft.campushelpdeskstudent.utils.AppUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 
 public class RecentListAdapter extends  RecyclerView.Adapter<RecentListAdapter.RecentItemHolder> {
 
-    int red = R.color.red;
-    ArrayList<Requests> requestsArrayList = new ArrayList<>();
-    public RecentListAdapter() {
-        this.requestsArrayList = Requests.getRequests();
-    }
+    private List<Request> requestsArrayList = new ArrayList<>();
 
     @NonNull
     @Override
     public RecentItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view  = LayoutInflater.from(parent.getContext()).inflate(R.layout.recent_list_iem,parent,false);
+        View view  = LayoutInflater.from(parent.getContext()).inflate(R.layout.recent_request_list_item,parent,false);
         return new RecentItemHolder(view);
     }
 
@@ -34,16 +37,19 @@ public class RecentListAdapter extends  RecyclerView.Adapter<RecentListAdapter.R
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull RecentItemHolder holder, int position) {
-        Requests requests = requestsArrayList.get(position);
-        holder.txt_tittle.setText(requests.tittle);
-        holder.txt_date.setText(requests.date);
-        if (requests.status.equals("pending")){
-            holder.btn_status.setBackgroundColor( R.color.red);
-            holder.btn_status.setText(requests.status);
+        Request request = requestsArrayList.get(position);
+        holder.txtTitle.setText(request.getTitle());
+        holder.txtBody.setText(request.getBody());
+        String time=new SimpleDateFormat("EEE, d MMM yyyy HH:mm a", Locale.getDefault()).format(request.getTimestamp());
+        holder.txtDate.setText(time);
+        holder.btnStatus.setBackgroundColor(AppUtils.getStatusColor(request.getStatus()));
+        holder.btnStatus.setText(request.getStatus());
 
-        }else {
-            holder.btn_status.setText(requests.status);
-        }
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent=new Intent(holder.itemView.getContext(), RequestDetailsActivity.class);
+            intent.putExtra("request", request);
+            holder.itemView.getContext().startActivity(intent);
+        });
     }
 
     @Override
@@ -51,36 +57,22 @@ public class RecentListAdapter extends  RecyclerView.Adapter<RecentListAdapter.R
         return requestsArrayList.size();
     }
 
-    public class RecentItemHolder extends RecyclerView.ViewHolder{
-        private TextView txt_tittle;
-        private  TextView txt_date;
-        private MaterialButton btn_status;
-        public RecentItemHolder(@NonNull View itemView) {
-            super(itemView);
-            txt_tittle = itemView.findViewById(R.id.txtRequestTitle);
-            txt_date = itemView.findViewById(R.id.txtDate);
-            btn_status = itemView.findViewById(R.id.btnStatus);
-        }
+    public void setRequestsArrayList(List<Request> requestsArrayList) {
+        this.requestsArrayList = requestsArrayList;
+        notifyDataSetChanged();
     }
 
-    static class  Requests {
-       String tittle;
-        String date;
-        String status;
-
-        public Requests(String tittle, String date,String status) {
-            this.tittle = tittle;
-            this.date = date;
-            this.status = status;
+    public class RecentItemHolder extends RecyclerView.ViewHolder{
+        private TextView txtTitle;
+        private  TextView txtBody;
+        private  TextView txtDate;
+        private MaterialButton btnStatus;
+        public RecentItemHolder(@NonNull View itemView) {
+            super(itemView);
+            txtTitle = itemView.findViewById(R.id.txtRequestTitle);
+            txtBody = itemView.findViewById(R.id.txtBody);
+            txtDate = itemView.findViewById(R.id.txtDate);
+            btnStatus = itemView.findViewById(R.id.btnStatus);
         }
-
-        public static ArrayList<Requests> getRequests(){
-            ArrayList<Requests> requests = new ArrayList<>();
-            requests.add(new Requests("No CBT","20th dec 2020","active"));
-            requests.add(new Requests("No CBT","20th dec 2020","pending"));
-            requests.add(new Requests("No CBT","20th dec 2020","pending"));
-            return requests;
-        }
-
     }
 }
