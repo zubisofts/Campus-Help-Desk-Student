@@ -115,6 +115,7 @@ public class AllRequestsFragment extends Fragment implements AllRequestAdapter.R
     public void onRequestItemClicked(Request request) {
         Intent intent=new Intent(getActivity(), RequestDetailsActivity.class);
         intent.putExtra("request", request);
+        intent.putExtra("type","student");
         startActivity(intent);
     }
 

@@ -16,6 +16,8 @@ public class RequestViewModel extends ViewModel {
 
     private final MutableLiveData<ApiResponse<String, String>> requestListener = new MutableLiveData<>();
     private final MutableLiveData<ApiResponse<List<Request>, String>> requestListListener = new MutableLiveData<>();
+    private final MutableLiveData<ApiResponse<Request, String>> requestDetailsListener = new MutableLiveData<>();
+    private final MutableLiveData<ApiResponse<List<Request>, String>> allRequestListListener = new MutableLiveData<>();
     private final MutableLiveData<ApiResponse<UserModel, String>> userListener = new MutableLiveData<>();
 
     public void submitRequest(Request request) {
@@ -34,6 +36,14 @@ public class RequestViewModel extends ViewModel {
         dataRepository.fetchAllRequests(uid, filter, requestListListener);
     }
 
+    public void fetchRequestDetails(String id) {
+        dataRepository.fetchRequestDetails(id, requestDetailsListener);
+    }
+
+    public MutableLiveData<ApiResponse<Request, String>> onRequestDetailsFetched() {
+        return requestDetailsListener;
+    }
+
     public MutableLiveData<ApiResponse<List<Request>, String>> onRequestListFetched() {
         return requestListListener;
     }
@@ -44,5 +54,13 @@ public class RequestViewModel extends ViewModel {
 
     public MutableLiveData<ApiResponse<UserModel, String>> onUserFetched() {
         return userListener;
+    }
+
+    public void fetchAllRequests(String query) {
+        dataRepository.fetchAllUsersRequest(query,allRequestListListener);
+    }
+
+    public MutableLiveData<ApiResponse<List<Request>, String>> onAllRequestFetched() {
+        return allRequestListListener;
     }
 }

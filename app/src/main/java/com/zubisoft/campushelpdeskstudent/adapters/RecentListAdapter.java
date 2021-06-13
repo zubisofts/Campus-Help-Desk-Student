@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.zubisoft.campushelpdeskstudent.R;
 import com.zubisoft.campushelpdeskstudent.RequestDetailsActivity;
+import com.zubisoft.campushelpdeskstudent.features.admin.AdminMainActivity;
+import com.zubisoft.campushelpdeskstudent.features.admin.AdminRequestListActivity;
 import com.zubisoft.campushelpdeskstudent.models.Request;
 import com.zubisoft.campushelpdeskstudent.utils.AppUtils;
 
@@ -47,7 +49,8 @@ public class RecentListAdapter extends  RecyclerView.Adapter<RecentListAdapter.R
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent=new Intent(holder.itemView.getContext(), RequestDetailsActivity.class);
-            intent.putExtra("request", request);
+            intent.putExtra("type","admin");
+            intent.putExtra("request",request);
             holder.itemView.getContext().startActivity(intent);
         });
     }
