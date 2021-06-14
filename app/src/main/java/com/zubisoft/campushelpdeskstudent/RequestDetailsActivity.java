@@ -1,15 +1,22 @@
 package com.zubisoft.campushelpdeskstudent;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.zubisoft.campushelpdeskstudent.adapters.StaffSelectionListAdapter;
+import com.zubisoft.campushelpdeskstudent.databinding.NewStaffNumberLayoutBinding;
 import com.zubisoft.campushelpdeskstudent.databinding.RequestStatusBottomsheetLayoutBinding;
 import com.zubisoft.campushelpdeskstudent.databinding.ActivityRequestDetailsBinding;
+import com.zubisoft.campushelpdeskstudent.databinding.StaffResponseLayoutBinding;
+import com.zubisoft.campushelpdeskstudent.models.ApiResponse;
 import com.zubisoft.campushelpdeskstudent.models.Request;
 import com.zubisoft.campushelpdeskstudent.models.UserModel;
 import com.zubisoft.campushelpdeskstudent.repository.DataRepository;
@@ -28,6 +35,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
     private UserViewModel userViewModel;
     private RequestViewModel requestViewModel;
     private List<UserModel> users = new ArrayList<>();
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +47,8 @@ public class RequestDetailsActivity extends AppCompatActivity {
                 new ViewModelProvider(this).get(UserViewModel.class);
         requestViewModel =
                 new ViewModelProvider(this).get(RequestViewModel.class);
+
+        progressDialog=new ProgressDialog(this);
 
         setSupportActionBar(binding.toolbar);
         binding.toolbar.setNavigationOnClickListener(v -> onBackPressed());
@@ -58,9 +68,13 @@ public class RequestDetailsActivity extends AppCompatActivity {
             }
         });
 
-        if (getIntent().getStringExtra("type").equals("admin") || getIntent().getStringExtra("type").equals("staff")) {
+        if (getIntent().getStringExtra("type").equals("admin")) {
             binding.assignLayout.setVisibility(View.VISIBLE);
-        } else {
+            binding.btnAssign.setText("Assign Staff");
+        }else if(getIntent().getStringExtra("type").equals("staff")) {
+            binding.assignLayout.setVisibility(View.VISIBLE);
+            binding.btnAssign.setText("Respond");
+        }else {
             binding.assignLayout.setVisibility(View.GONE);
         }
 
@@ -76,6 +90,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
                 Request req=requestResponse.getData();
                 binding.btnStatus.setBackgroundColor(AppUtils.getStatusColor(req.getStatus()));
                 binding.btnStatus.setText(req.getStatus());
+                binding.txtResponse.setText(request.getResponse());
                 if(!req.getModeratorId().isEmpty()){
                     userViewModel.fetchUser(req.getModeratorId());
                    
@@ -84,9 +99,26 @@ public class RequestDetailsActivity extends AppCompatActivity {
             }
         });
 
+        requestViewModel.onResponseSent().observe(this, response -> {
+            if(response.getError()==null){
+                Snackbar.make(binding.getRoot(), response.getData(), Snackbar.LENGTH_LONG).show();
+            }else{
+                Snackbar.make(binding.getRoot(), response.getError(), Snackbar.LENGTH_LONG).show();
+            }
+            hideDialog();
+        });
 
-        binding.btnAssign.setOnClickListener(v -> showBottomSheetDialog(users, request));
+        binding.btnAssign.setOnClickListener(v -> {
+
+            if(getIntent().getStringExtra("type").equals("admin")){
+                showBottomSheetDialog(users, request);
+            }else{
+                showResponseDialog(request);
+            }
+        });
     }
+
+
 
     private void initDetails(Request request) {
         String time = new SimpleDateFormat("EEE, d MMM yyyy HH:mm a", Locale.getDefault()).format(request.getTimestamp());
@@ -139,5 +171,37 @@ public class RequestDetailsActivity extends AppCompatActivity {
         layout.staffRecyclerView.setAdapter(adapter);
 
         bottomSheetDialog.show();
+    }
+    private void showResponseDialog(Request request) {
+        StaffResponseLayoutBinding layoutBinding=StaffResponseLayoutBinding.inflate(getLayoutInflater());
+        View view=layoutBinding.getRoot();
+        new AlertDialog.Builder(this)
+                .setView(view)
+                .setPositiveButton("Send", (dialog, which) -> {
+                    if(layoutBinding.edtResponse.getText().toString().isEmpty()){
+                        Snackbar.make(binding.getRoot(), "You must enter a response to continue", Snackbar.LENGTH_LONG).show();
+                    }else{
+                        respondToRequest(request, layoutBinding.edtResponse.getText().toString());
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void respondToRequest(Request request, String response) {
+        showDialog();
+        requestViewModel.respondToRequest(request, response);
+    }
+
+    private void showDialog(){
+        progressDialog.setMessage("Sending response...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    private void hideDialog(){
+        if(progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 }

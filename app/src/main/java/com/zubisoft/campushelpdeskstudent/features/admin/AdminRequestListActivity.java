@@ -21,6 +21,7 @@ import com.zubisoft.campushelpdeskstudent.databinding.RequestFilterBottomsheetLa
 import com.zubisoft.campushelpdeskstudent.models.Request;
 import com.zubisoft.campushelpdeskstudent.viewmodels.RequestViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdminRequestListActivity extends AppCompatActivity implements AllRequestAdapter.RequestItemListener {
@@ -46,13 +47,12 @@ public class AdminRequestListActivity extends AppCompatActivity implements AllRe
         adapter.setRequestItemListener(this);
         binding.requestsRecycler.setAdapter(adapter);
 
-//        String query=getIntent().getStringExtra("query");
-//        if(query != null){
-//            requestViewModel.fetchAllRequests(query);
-//            getSupportActionBar().setTitle("Currently Assigned");
-//        }else{
-//            requestViewModel.fetchAllRequests("");
-//        }
+        String query=getIntent().getStringExtra("query");
+        if(query != null){
+            requestViewModel.fetchAllRequests(query);
+        }else{
+            requestViewModel.fetchAllRequests("");
+        }
 
         requestViewModel.onAllRequestFetched().observe(this, response -> {
             if(response.getError()==null){
@@ -63,7 +63,19 @@ public class AdminRequestListActivity extends AppCompatActivity implements AllRe
                 }else {
                     binding.emptyLayout.setVisibility(View.GONE);
                     binding.requestsRecycler.setVisibility(View.VISIBLE);
-                    adapter.setRequestList(requests);
+                    if(query.equals("admin")){
+                        adapter.setRequestList(requests);
+                    }else {
+                        String uid=getIntent().getStringExtra("uid");
+                        List<Request> reqs=new ArrayList<>();
+                        for(Request r:requests){
+                            if(r.getModeratorId().equals(uid)){
+                                reqs.add(r);
+                            }
+                        }
+                        adapter.setRequestList(reqs);
+                    }
+
                 }
             }
         });

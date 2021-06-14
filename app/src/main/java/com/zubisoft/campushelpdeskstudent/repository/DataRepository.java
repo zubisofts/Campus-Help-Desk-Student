@@ -201,6 +201,18 @@ public class DataRepository {
 
     }
 
+    public void respondToRequest(Request request, String response, MutableLiveData<ApiResponse<String, String>> requestResponseListener) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("response", response);
+        data.put("status", "completed");
+        db.collection("requests")
+                .document(request.getId())
+                .update(data)
+                .addOnSuccessListener(aVoid -> requestResponseListener.postValue(new ApiResponse<>("Response updated successfully", null)))
+                .addOnFailureListener(e -> requestResponseListener.postValue(new ApiResponse<>(null, e.getMessage())));
+
+    }
+
 //    public void addStaffNumber(String id, MutableLiveData<ApiResponse<String, String>> addStaffNumberListener) {
 //
 //        db.collection("staff_ids")

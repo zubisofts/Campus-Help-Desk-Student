@@ -54,6 +54,8 @@ public class StaffMainActivity extends AppCompatActivity implements FirebaseAuth
 
         binding.btnAllRequests.setOnClickListener(v -> {
             Intent intent = new Intent(StaffMainActivity.this, AdminRequestListActivity.class);
+            intent.putExtra("uid", getIntent().getStringExtra("uid"));
+            intent.putExtra("query", "");
             startActivity(intent);
         });
 
@@ -65,12 +67,14 @@ public class StaffMainActivity extends AppCompatActivity implements FirebaseAuth
         binding.btnCompleted.setOnClickListener(v -> {
             Intent intent = new Intent(StaffMainActivity.this, AdminRequestListActivity.class);
             intent.putExtra("query", "completed");
+            intent.putExtra("uid", getIntent().getStringExtra("uid"));
             startActivity(intent);
         });
 
         binding.btnPending.setOnClickListener(v -> {
             Intent intent = new Intent(StaffMainActivity.this, AdminRequestListActivity.class);
             intent.putExtra("query", "processing");
+            intent.putExtra("uid", getIntent().getStringExtra("uid"));
             startActivity(intent);
         });
 

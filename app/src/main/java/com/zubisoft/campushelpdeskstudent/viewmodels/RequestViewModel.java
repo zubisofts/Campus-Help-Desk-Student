@@ -19,6 +19,7 @@ public class RequestViewModel extends ViewModel {
     private final MutableLiveData<ApiResponse<Request, String>> requestDetailsListener = new MutableLiveData<>();
     private final MutableLiveData<ApiResponse<List<Request>, String>> allRequestListListener = new MutableLiveData<>();
     private final MutableLiveData<ApiResponse<UserModel, String>> userListener = new MutableLiveData<>();
+    private final MutableLiveData<ApiResponse<String, String>> requestResponseListener = new MutableLiveData<>();
 
     public void submitRequest(Request request) {
         dataRepository.submitRequest(request, requestListener);
@@ -62,5 +63,13 @@ public class RequestViewModel extends ViewModel {
 
     public MutableLiveData<ApiResponse<List<Request>, String>> onAllRequestFetched() {
         return allRequestListListener;
+    }
+
+    public void respondToRequest(Request request, String response) {
+        dataRepository.respondToRequest(request, response, requestResponseListener);
+    }
+
+    public MutableLiveData<ApiResponse<String, String>> onResponseSent(){
+        return requestResponseListener;
     }
 }
