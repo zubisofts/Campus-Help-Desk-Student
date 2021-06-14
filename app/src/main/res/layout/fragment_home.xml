@@ -108,7 +108,7 @@
         android:layout_height="wrap_content"
         tools:listitem="@layout/request_list_item"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:id="@+id/recent_recycler"/>
+        android:id="@+id/recentRecycler"/>
 
         <LinearLayout
             android:layout_width="wrap_content"

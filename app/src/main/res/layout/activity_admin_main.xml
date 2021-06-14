@@ -278,7 +278,7 @@
                         </LinearLayout>
 
                         <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/btnReports"
+                            android:id="@+id/btn_assigned"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clickable="true"
@@ -318,7 +318,7 @@
                 android:layout_height="wrap_content">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recent_recycler"
+                    android:id="@+id/recentRecycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"

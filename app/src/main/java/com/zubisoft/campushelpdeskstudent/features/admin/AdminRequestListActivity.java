@@ -46,7 +46,14 @@ public class AdminRequestListActivity extends AppCompatActivity implements AllRe
         adapter.setRequestItemListener(this);
         binding.requestsRecycler.setAdapter(adapter);
 
-        requestViewModel.fetchAllRequests("");
+        String query=getIntent().getStringExtra("query");
+        if(query != null){
+            requestViewModel.fetchAllRequests("processing");
+            getSupportActionBar().setTitle("Currently Assigned");
+        }else{
+            requestViewModel.fetchAllRequests("");
+        }
+
         requestViewModel.onAllRequestFetched().observe(this, response -> {
             if(response.getError()==null){
                 List<Request> requests=response.getData();

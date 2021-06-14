@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.zubisoft.campushelpdeskstudent.R;
 import com.zubisoft.campushelpdeskstudent.RequestDetailsActivity;
-import com.zubisoft.campushelpdeskstudent.features.admin.AdminMainActivity;
-import com.zubisoft.campushelpdeskstudent.features.admin.AdminRequestListActivity;
 import com.zubisoft.campushelpdeskstudent.models.Request;
 import com.zubisoft.campushelpdeskstudent.utils.AppUtils;
 

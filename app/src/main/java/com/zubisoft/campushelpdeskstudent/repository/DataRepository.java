@@ -163,4 +163,51 @@ public class DataRepository {
                 .document(requestId)
                 .update(data);
     }
+
+    public void addStaffNumber(String id, MutableLiveData<ApiResponse<String, String>> addStaffNumberListener) {
+
+        db.collection("staff_ids")
+                .document(id)
+                .get().addOnSuccessListener(documentSnapshots -> {
+
+                    if (!documentSnapshots.exists()){
+                        insertStaffId(id, addStaffNumberListener);
+                    }else{
+                        addStaffNumberListener.postValue(new ApiResponse<>(null, "Sorry this staff ID already exists."));
+                    }
+
+                }).addOnFailureListener(e -> addStaffNumberListener.postValue(new ApiResponse<>(null, e.getMessage())));
+
+    }
+
+    private void insertStaffId(String id, MutableLiveData<ApiResponse<String, String>> addStaffNumberListener) {
+
+        HashMap<String,Object> data=new HashMap<>();
+        data.put("id",id);
+        data.put("registered", false);
+
+        db.collection("staff_ids")
+                .document(id)
+                .set(data)
+                .addOnSuccessListener(aVoid -> addStaffNumberListener.postValue(new ApiResponse<>("Successfully added", null)))
+                .addOnFailureListener(e -> addStaffNumberListener.postValue(new ApiResponse<>(null, e.getMessage())));
+
+    }
+
+//    public void addStaffNumber(String id, MutableLiveData<ApiResponse<String, String>> addStaffNumberListener) {
+//
+//        db.collection("staff_ids")
+//                .whereEqualTo("id", id)
+//                .get().addOnSuccessListener(queryDocumentSnapshots -> {
+//
+//            if (queryDocumentSnapshots.isEmpty()){
+//                addStaffNumberListener.postValue(new ApiResponse<>(null, "Sorry this staff ID is invalid or not approved by the admin, please contact the admin."));
+//            }else{
+//                DocumentSnapshot snapshot = queryDocumentSnapshots.getDocuments().get(0);
+//                snapshot.getString()
+//            }
+//
+//        }).addOnFailureListener(e -> addStaffNumberListener.postValue(new ApiResponse<>(null, e.getMessage())));
+//
+//    }
 }

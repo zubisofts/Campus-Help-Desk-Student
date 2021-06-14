@@ -9,7 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CampusHelpDeskStudent">
-        <activity android:name=".features.admin.AdminRequestListActivity"></activity>
+        <activity android:name=".features.admin.StudentListActivity"/>
+        <activity android:name=".features.admin.StaffListActivity"/>
+        <activity android:name=".features.staff.StaffMainActivity" />
+        <activity android:name=".features.admin.AdminRequestListActivity" />
         <activity android:name=".features.admin.AdminMainActivity" />
         <activity android:name=".RequestDetailsActivity" />
         <activity android:name=".NewRequestActivity" />

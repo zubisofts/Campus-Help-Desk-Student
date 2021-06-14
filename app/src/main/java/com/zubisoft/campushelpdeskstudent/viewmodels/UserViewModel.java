@@ -16,6 +16,7 @@ public class UserViewModel extends ViewModel {
 
     private final MutableLiveData<ApiResponse<UserModel, String>> userListener = new MutableLiveData<>();
     private final MutableLiveData<ApiResponse<List<UserModel>, String>> allUsersListener = new MutableLiveData<>();
+    private final MutableLiveData<ApiResponse<String, String>> addStaffNumberListener = new MutableLiveData<>();
 
     public void fetchUser(String uid) {
         dataRepository.fetchUser(uid, userListener);
@@ -31,5 +32,13 @@ public class UserViewModel extends ViewModel {
 
     public MutableLiveData<ApiResponse<List<UserModel>, String>> onUsersFetched() {
         return allUsersListener;
+    }
+
+    public void addStaffNumber(String id) {
+        dataRepository.addStaffNumber(id, addStaffNumberListener);
+    }
+
+    public MutableLiveData<ApiResponse<String,String>> onStaffNumberAdded(){
+        return addStaffNumberListener;
     }
 }
