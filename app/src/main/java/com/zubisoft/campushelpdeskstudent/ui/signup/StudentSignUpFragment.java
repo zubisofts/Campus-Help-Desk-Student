@@ -166,6 +166,7 @@ public class StudentSignUpFragment extends Fragment {
                 edtName.getText().toString(),
                 edtRegNo.getText().toString(),
                 "",
+                "",
                 spinnerLevel.getSelectedItem().toString(),
                 spinnerDept.getSelectedItem().toString(),
                 "student",

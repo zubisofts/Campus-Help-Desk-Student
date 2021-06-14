@@ -6,6 +6,7 @@ public class UserModel {
     private String fullName;
     private String regNo;
     private String staffNo;
+    private String workTitle;
     private String level;
     private String department;
     private String type;
@@ -16,10 +17,11 @@ public class UserModel {
     public UserModel() {
     }
 
-    public UserModel(String fullName, String regNo, String staffNo, String level, String department, String type, String email, String phoneNumber, long createdAt) {
+    public UserModel(String fullName, String regNo, String staffNo, String workTitle,String level, String department, String type, String email, String phoneNumber, long createdAt) {
         this.fullName = fullName;
         this.regNo = regNo;
         this.staffNo = staffNo;
+        this.workTitle=workTitle;
         this.level = level;
         this.department = department;
         this.type = type;
@@ -58,6 +60,14 @@ public class UserModel {
 
     public void setStaffNo(String staffNo) {
         this.staffNo = staffNo;
+    }
+
+    public String getWorkTitle() {
+        return workTitle;
+    }
+
+    public void setWorkTitle(String workTitle) {
+        this.workTitle = workTitle;
     }
 
     public String getLevel() {

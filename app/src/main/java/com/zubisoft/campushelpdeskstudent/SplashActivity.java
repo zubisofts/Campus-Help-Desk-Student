@@ -37,21 +37,23 @@ public class SplashActivity extends AppCompatActivity {
                 if(user.getType().equals("student")){
                     Intent intent = new Intent(this, MainActivity.class);
                     intent.putExtra("uid", user.getId());
+                    intent.putExtra("type", user.getType());
                     startActivity(intent);
                     finish();
                 }else if(user.getType().equals("staff")){
                     Intent intent = new Intent(this, StaffMainActivity.class);
                     intent.putExtra("uid", user.getId());
+                    intent.putExtra("type", user.getType());
                     startActivity(intent);
-                    Toast.makeText(this, "This is a staff", Toast.LENGTH_SHORT).show();
                 }else{
                     Intent intent = new Intent(this, AdminMainActivity.class);
                     intent.putExtra("uid", user.getId());
+                    intent.putExtra("type", user.getType());
                     startActivity(intent);
                     finish();
                 }
             }else{
-                Snackbar.make(binding.getRoot(), "An error occured, make sure you also have an active connection.", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(binding.getRoot(), "An error occurred, make sure you also have an active connection.", Snackbar.LENGTH_LONG).show();
             }
         });
 

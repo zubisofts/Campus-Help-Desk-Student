@@ -58,7 +58,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
             }
         });
 
-        if (getIntent().getStringExtra("type").equals("admin")) {
+        if (getIntent().getStringExtra("type").equals("admin") || getIntent().getStringExtra("type").equals("staff")) {
             binding.assignLayout.setVisibility(View.VISIBLE);
         } else {
             binding.assignLayout.setVisibility(View.GONE);
@@ -104,8 +104,13 @@ public class RequestDetailsActivity extends AppCompatActivity {
         } else {
             binding.assignedStaffLayout.setVisibility(View.GONE);
             binding.unassignedStaffLayout.setVisibility(View.VISIBLE);
+        }
 
-
+        if (request.getResponse().isEmpty()) {
+            binding.responseStaffLayout.setVisibility(View.VISIBLE);
+            binding.txtResponse.setText(request.getResponse());
+        } else {
+            binding.responseStaffLayout.setVisibility(View.GONE);
         }
 
     }

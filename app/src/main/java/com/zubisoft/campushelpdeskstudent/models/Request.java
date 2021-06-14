@@ -9,17 +9,19 @@ public class Request implements Serializable {
     private String body;
     private String userId;
     private String status;
+    private String response;
     private String moderatorId;
     private long timestamp;
 
     public Request() {
     }
 
-    public Request(String title, String body, String userId, String status, String moderatorId, long timestamp) {
+    public Request(String title, String body, String userId, String status, String response, String moderatorId, long timestamp) {
         this.title = title;
         this.body = body;
         this.userId = userId;
         this.status = status;
+        this.response=response;
         this.moderatorId = moderatorId;
         this.timestamp = timestamp;
     }
@@ -62,6 +64,14 @@ public class Request implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
     }
 
     public String getModeratorId() {

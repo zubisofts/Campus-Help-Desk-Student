@@ -52,7 +52,7 @@ public class AdminMainActivity extends AppCompatActivity implements FirebaseAuth
                 new ViewModelProvider(this).get(UserViewModel.class);
 
         setSupportActionBar(binding.toolbar);
-        RecentListAdapter adapter = new RecentListAdapter();
+        RecentListAdapter adapter = new RecentListAdapter(getIntent().getStringExtra("type"));
         binding.recentRecycler.setAdapter(adapter);
 
         binding.btnRequests.setOnClickListener(v -> {

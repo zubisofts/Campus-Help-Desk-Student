@@ -35,6 +35,7 @@ public class AllRequestsFragment extends Fragment implements AllRequestAdapter.R
     private FragmentAllRequestsBinding binding;
     private int filterIndex=1;
     private String uid;
+    private String type;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class AllRequestsFragment extends Fragment implements AllRequestAdapter.R
         binding.requestsRecycler.setAdapter(adapter);
 
         uid=getActivity().getIntent().getStringExtra("uid");
+        type=getActivity().getIntent().getStringExtra("type");
         requestViewModel.fetchRequests(uid);
         requestViewModel.onRequestListFetched().observe(getViewLifecycleOwner(), new Observer<ApiResponse<List<Request>, String>>() {
             @Override
@@ -115,7 +117,7 @@ public class AllRequestsFragment extends Fragment implements AllRequestAdapter.R
     public void onRequestItemClicked(Request request) {
         Intent intent=new Intent(getActivity(), RequestDetailsActivity.class);
         intent.putExtra("request", request);
-        intent.putExtra("type","student");
+        intent.putExtra("type",type);
         startActivity(intent);
     }
 

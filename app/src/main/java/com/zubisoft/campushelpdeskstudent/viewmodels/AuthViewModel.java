@@ -20,7 +20,12 @@ public class AuthViewModel extends ViewModel {
     }
 
     public void signUpUser(UserModel user, String password){
-        authRepository.signUpUser(user, password, userAuthListener);
+        if(user.getType().equals("student")){
+            authRepository.signUpStudent(user, password, userAuthListener);
+        }else{
+            authRepository.signUpStaff(user, password, userAuthListener);
+        }
+
     }
 
     public MutableLiveData<ApiResponse<String, String>> onAuthResponse(){

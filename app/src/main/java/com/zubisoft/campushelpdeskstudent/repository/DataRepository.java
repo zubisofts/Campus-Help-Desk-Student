@@ -88,9 +88,9 @@ public class DataRepository {
         db.collection("users")
                 .document(uid)
                 .addSnapshotListener((value, error) -> {
-                    if(error==null){
+                    if (error == null) {
                         userListener.postValue(new ApiResponse<>(value.toObject(UserModel.class), null));
-                    }else{
+                    } else {
                         userListener.postValue(new ApiResponse<>(null, error.getMessage()));
                     }
                 });
@@ -101,20 +101,27 @@ public class DataRepository {
         db.collection("users")
                 .document(user.getId())
                 .set(user)
-                .addOnSuccessListener(aVoid -> userAuthListener.postValue(new ApiResponse<>(user.getId(), null)))
+                .addOnSuccessListener(aVoid -> {
+                    userAuthListener.postValue(new ApiResponse<>(user.getId(), null));
+                    if (user.getType().equals("staff")) {
+                        db.collection("staff_ids")
+                                .document(user.getStaffNo())
+                                .update("registered", true);
+                    }
+                })
                 .addOnFailureListener(e -> userAuthListener.postValue(new ApiResponse<>(null, e.getMessage())));
     }
 
     public void fetchAllUsers(MutableLiveData<ApiResponse<List<UserModel>, String>> allUsersListener) {
         db.collection("users")
                 .addSnapshotListener((value, error) -> {
-                    if(error==null){
-                        List<UserModel> users=new ArrayList<>();
-                        for(DocumentSnapshot snapshot:value){
+                    if (error == null) {
+                        List<UserModel> users = new ArrayList<>();
+                        for (DocumentSnapshot snapshot : value) {
                             users.add(snapshot.toObject(UserModel.class));
                         }
                         allUsersListener.postValue(new ApiResponse<>(users, null));
-                    }else{
+                    } else {
                         allUsersListener.postValue(new ApiResponse<>(null, error.getMessage()));
                     }
                 });
@@ -147,16 +154,16 @@ public class DataRepository {
         db.collection("requests")
                 .document(id)
                 .addSnapshotListener((value, error) -> {
-                    if(error==null){
+                    if (error == null) {
                         requestDetailsListener.postValue(new ApiResponse<>(value.toObject(Request.class), null));
-                    }else{
+                    } else {
                         requestDetailsListener.postValue(new ApiResponse<>(null, error.getMessage()));
                     }
                 });
     }
 
-    public void assignStaff(String requestId, String staffId){
-        Map<String, Object> data=new HashMap<>();
+    public void assignStaff(String requestId, String staffId) {
+        Map<String, Object> data = new HashMap<>();
         data.put("moderatorId", staffId);
         data.put("status", "processing");
         db.collection("requests")
@@ -170,20 +177,20 @@ public class DataRepository {
                 .document(id)
                 .get().addOnSuccessListener(documentSnapshots -> {
 
-                    if (!documentSnapshots.exists()){
-                        insertStaffId(id, addStaffNumberListener);
-                    }else{
-                        addStaffNumberListener.postValue(new ApiResponse<>(null, "Sorry this staff ID already exists."));
-                    }
+            if (!documentSnapshots.exists()) {
+                insertStaffId(id, addStaffNumberListener);
+            } else {
+                addStaffNumberListener.postValue(new ApiResponse<>(null, "Sorry this staff ID already exists."));
+            }
 
-                }).addOnFailureListener(e -> addStaffNumberListener.postValue(new ApiResponse<>(null, e.getMessage())));
+        }).addOnFailureListener(e -> addStaffNumberListener.postValue(new ApiResponse<>(null, e.getMessage())));
 
     }
 
     private void insertStaffId(String id, MutableLiveData<ApiResponse<String, String>> addStaffNumberListener) {
 
-        HashMap<String,Object> data=new HashMap<>();
-        data.put("id",id);
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("id", id);
         data.put("registered", false);
 
         db.collection("staff_ids")

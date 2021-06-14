@@ -25,6 +25,11 @@ import java.util.Locale;
 public class RecentListAdapter extends  RecyclerView.Adapter<RecentListAdapter.RecentItemHolder> {
 
     private List<Request> requestsArrayList = new ArrayList<>();
+    private String userType;
+
+    public RecentListAdapter(String type) {
+        this.userType=type;
+    }
 
     @NonNull
     @Override
@@ -47,7 +52,7 @@ public class RecentListAdapter extends  RecyclerView.Adapter<RecentListAdapter.R
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent=new Intent(holder.itemView.getContext(), RequestDetailsActivity.class);
-            intent.putExtra("type","admin");
+            intent.putExtra("type",userType);
             intent.putExtra("request",request);
             holder.itemView.getContext().startActivity(intent);
         });

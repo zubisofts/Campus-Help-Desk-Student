@@ -37,7 +37,7 @@ public class HomeFragment extends Fragment {
         requestViewModel =
                 new ViewModelProvider(this).get(RequestViewModel.class);
 
-        RecentListAdapter adapter = new RecentListAdapter();
+        RecentListAdapter adapter = new RecentListAdapter(getActivity().getIntent().getStringExtra("type"));
         binding.recentRecycler.setAdapter(adapter);
 
         requestViewModel.fetchRequests(getActivity().getIntent().getStringExtra("uid"));

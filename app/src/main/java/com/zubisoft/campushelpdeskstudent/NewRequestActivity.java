@@ -67,6 +67,7 @@ public class NewRequestActivity extends AppCompatActivity {
                 binding.edtRequestBody.getText().toString(),
                 userId, "pending",
                 "",
+                "",
                 new Date().getTime());
         showLoadingDialog("Submitting your request...");
         requestViewModel.submitRequest(request);

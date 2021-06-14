@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.snackbar.Snackbar;
 import com.zubisoft.campushelpdeskstudent.features.admin.AdminMainActivity;
 import com.zubisoft.campushelpdeskstudent.databinding.ActivityLoginBinding;
+import com.zubisoft.campushelpdeskstudent.features.staff.StaffMainActivity;
 import com.zubisoft.campushelpdeskstudent.models.UserModel;
 import com.zubisoft.campushelpdeskstudent.viewmodels.AuthViewModel;
 
@@ -52,18 +53,21 @@ public class LoginActivity extends AppCompatActivity {
                 if(user.getType().equals("student")){
                     Intent intent = new Intent(this, MainActivity.class);
                     intent.putExtra("uid", response.getData().getId());
+                    intent.putExtra("type", response.getData().getType());
                     startActivity(intent);
-                    finish();
                 }else if(user.getType().equals("staff")){
-                    Intent intent = new Intent(this, MainActivity.class);
+                    Intent intent = new Intent(this, StaffMainActivity.class);
                     intent.putExtra("uid", response.getData().getId());
-//                    startActivity(intent);
-                    Toast.makeText(this, "This is a staff", Toast.LENGTH_SHORT).show();
+                    intent.putExtra("type", response.getData().getType());
+                    startActivity(intent);
                 }else{
                     Intent intent = new Intent(this, AdminMainActivity.class);
                     intent.putExtra("uid", response.getData().getId());
+                    intent.putExtra("type", response.getData().getType());
                     startActivity(intent);
                 }
+
+                finish();
             } else {
                 Snackbar.make(binding.getRoot(), response.getError(), Snackbar.LENGTH_LONG).show();
             }

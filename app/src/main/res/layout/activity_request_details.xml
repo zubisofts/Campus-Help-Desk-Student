@@ -216,6 +216,51 @@
 
             </FrameLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="@font/alvaro"
+                android:text="Response :"
+                android:textColor="@android:color/black"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="200dp"
+                android:layout_height="2dp"
+                android:layout_marginStart="16dp"
+                android:background="@color/purple_500" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtResponse"
+                android:layout_marginHorizontal="16dp"
+                android:gravity="center"
+                android:text="Response"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:id="@+id/responseStaffLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="32dp"
+                    android:gravity="center"
+                    android:text="No response yet for this request."
+                    android:textSize="16sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
